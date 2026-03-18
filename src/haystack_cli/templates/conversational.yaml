@@ -1,0 +1,5 @@
+# Template: conversational
+# Provider: {{ llm_provider }} | Store: {{ document_store }}
+# Full implementation coming soon.
+components: {}
+connections: []

@@ -1,0 +1,37 @@
+# RAG Basic — Retriever + PromptBuilder + Generator
+# Provider: {{ llm_provider }} | Store: {{ document_store }}
+
+components:
+  retriever:
+    type: haystack.components.retrievers.in_memory.InMemoryBM25Retriever
+    init_parameters:
+      document_store:
+        type: haystack.document_stores.in_memory.InMemoryDocumentStore
+        init_parameters: {}
+
+  prompt_builder:
+    type: haystack.components.builders.PromptBuilder
+    init_parameters:
+      template: |
+        Given the following context, answer the question.
+        Context: {% for doc in documents %}{{ doc.content }}{% endfor %}
+        Question: {{ query }}
+
+  generator:
+    type: haystack.components.generators.OpenAIGenerator
+    init_parameters:
+      model: gpt-4o-mini
+
+connections:
+  - sender: retriever.documents
+    receiver: prompt_builder.documents
+  - sender: prompt_builder.prompt
+    receiver: generator.prompt
+
+inputs:
+  query:
+    - retriever.query
+    - prompt_builder.query
+
+outputs:
+  replies: generator.replies

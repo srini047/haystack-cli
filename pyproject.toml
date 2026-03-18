@@ -1,0 +1,48 @@
+[project]
+name = "haystack-cli"
+version = "0.1.0"
+description = "The official CLI for Haystack Agentic AI Framework"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+keywords = ["haystack", "llm", "rag", "pipelines", "cli"]
+
+
+dependencies = [
+    "typer>=0.12",
+    "rich>=13",
+    "questionary>=2",
+    "pyyaml>=6",
+    "tomlkit>=0.12",
+    "pydantic>=2",
+]
+
+[project.scripts]
+haystack = "haystack_cli.main:app"
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9",
+    "ruff>=0.4",
+    "mypy>=1.10",
+]
+
+[tool.ruff]
+src = ["src"]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+mypy_path = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

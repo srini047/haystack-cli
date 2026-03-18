@@ -1,0 +1,38 @@
+# Indexing Basic — FileConverter + Splitter + Embedder + Writer
+# Store: {{ document_store }}
+
+components:
+  converter:
+    type: haystack.components.converters.TextFileToDocument
+    init_parameters: {}
+
+  splitter:
+    type: haystack.components.preprocessors.DocumentSplitter
+    init_parameters:
+      split_by: word
+      split_length: 200
+      split_overlap: 20
+
+  embedder:
+    type: haystack.components.embedders.OpenAIDocumentEmbedder
+    init_parameters:
+      model: text-embedding-3-small
+
+  writer:
+    type: haystack.components.writers.DocumentWriter
+    init_parameters:
+      document_store:
+        type: haystack.document_stores.in_memory.InMemoryDocumentStore
+        init_parameters: {}
+
+connections:
+  - sender: converter.documents
+    receiver: splitter.documents
+  - sender: splitter.documents
+    receiver: embedder.documents
+  - sender: embedder.documents
+    receiver: writer.documents
+
+inputs:
+  sources:
+    - converter.sources
