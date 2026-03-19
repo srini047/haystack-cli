@@ -51,9 +51,7 @@ def init(project_name: str = typer.Argument(default="")) -> None:
         choices=FIELD_CHOICES["llm.provider"] or [],
     ).ask()
 
-    include_examples = questionary.confirm(
-        "Include example documents?", default=True
-    ).ask()
+    include_examples = questionary.confirm("Include example documents?", default=True).ask()
 
     # All prompts answered — resolve templates and write project
     pipeline_tmpl, indexing_tmpl = _PIPELINE_TEMPLATES[pipeline_type]
@@ -66,9 +64,7 @@ def init(project_name: str = typer.Argument(default="")) -> None:
     project_dir = Path.cwd() / project_name
 
     try:
-        created = scaffold.write_project(
-            project_dir, pipeline_tmpl, indexing_tmpl, context
-        )
+        created = scaffold.write_project(project_dir, pipeline_tmpl, indexing_tmpl, context)
     except ProjectExistsError as e:
         abort(
             str(e),
