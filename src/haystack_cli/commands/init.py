@@ -16,6 +16,11 @@ _PIPELINE_TEMPLATES: dict[str, tuple[str, str]] = {
     "Hybrid retrieval": ("hybrid-retrieval", "indexing-basic"),
 }
 
+SAMPLE_DOCUMENT_CONTENT = """
+"Haystack is an open-source framework for building LLM pipelines.\n"
+"It supports RAG, agents, and custom pipeline topologies.\n"
+"""
+
 
 @app.callback(invoke_without_command=True)
 def init(project_name: str = typer.Argument(default="")) -> None:
@@ -46,7 +51,9 @@ def init(project_name: str = typer.Argument(default="")) -> None:
         choices=FIELD_CHOICES["llm.provider"] or [],
     ).ask()
 
-    include_examples = questionary.confirm("Include example documents?", default=True).ask()
+    include_examples = questionary.confirm(
+        "Include example documents?", default=True
+    ).ask()
 
     # All prompts answered — resolve templates and write project
     pipeline_tmpl, indexing_tmpl = _PIPELINE_TEMPLATES[pipeline_type]
@@ -59,9 +66,14 @@ def init(project_name: str = typer.Argument(default="")) -> None:
     project_dir = Path.cwd() / project_name
 
     try:
-        created = scaffold.write_project(project_dir, pipeline_tmpl, indexing_tmpl, context)
+        created = scaffold.write_project(
+            project_dir, pipeline_tmpl, indexing_tmpl, context
+        )
     except ProjectExistsError as e:
-        abort(str(e), hint="Choose a different project name or remove the existing directory.")
+        abort(
+            str(e),
+            hint="Choose a different project name or remove the existing directory.",
+        )
 
     if include_examples:
         _write_example_doc(project_dir)
@@ -80,7 +92,4 @@ def init(project_name: str = typer.Argument(default="")) -> None:
 def _write_example_doc(project_dir: Path) -> None:
     docs_dir = project_dir / "docs"
     docs_dir.mkdir(exist_ok=True)
-    (docs_dir / "example.txt").write_text(
-        "Haystack is an open-source framework for building LLM pipelines.\n"
-        "It supports RAG, agents, and custom pipeline topologies.\n"
-    )
+    (docs_dir / "example.txt").write_text(SAMPLE_DOCUMENT_CONTENT)

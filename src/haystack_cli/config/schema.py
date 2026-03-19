@@ -58,5 +58,4 @@ FIELD_CHOICES: dict[str, list[str] | None] = {
     "document_store.index": None,
     "llm.provider": list(LLMProvider.__args__),  # type: ignore[attr-defined]
     "llm.model": None,
-    "pipeline.templates_dir": None,
 }

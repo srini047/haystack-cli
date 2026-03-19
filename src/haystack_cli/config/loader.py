@@ -24,7 +24,6 @@ HAYSTACK_ENV_VAR_MAP: dict[str, str] = {
     "HAYSTACK_STORE_INDEX": "document_store.index",
     "HAYSTACK_LLM_PROVIDER": "llm.provider",
     "HAYSTACK_LLM_MODEL": "llm.model",
-    "HAYSTACK_TEMPLATES_DIR": "pipeline.templates_dir",
 }
 
 

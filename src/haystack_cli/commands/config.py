@@ -67,7 +67,7 @@ def schema() -> None:
 def edit(
     global_: Annotated[bool, typer.Option("--global", help="Edit global config.")] = False,
 ) -> None:
-    """Open the config file in $EDITOR."""
+    """Open the config file in $EDITOR or default to `nano`."""
     path = GLOBAL_CONFIG_PATH if global_ else PROJECT_CONFIG_PATH
 
     if not path.exists():
