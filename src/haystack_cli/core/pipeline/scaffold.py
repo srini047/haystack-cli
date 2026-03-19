@@ -76,7 +76,6 @@ class PipelineScaffold:
     def _build_project_toml(self, context: dict[str, str]) -> str:
         return (
             "[pipeline]\n"
-            'default_file = "pipeline.yaml"\n\n'
             "[document_store]\n"
             f'backend = "{context.get("document_store", "inmemory")}"\n\n'
             "[llm]\n"

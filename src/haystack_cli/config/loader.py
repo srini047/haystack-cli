@@ -15,7 +15,7 @@ GLOBAL_CONFIG_PATH = Path.home() / ".haystack" / "config.toml"
 PROJECT_CONFIG_PATH = Path(".haystack") / "config.toml"
 
 # Maps HAYSTACK_* env var names to dotted config keys.
-ENV_VAR_MAP: dict[str, str] = {
+HAYSTACK_ENV_VAR_MAP: dict[str, str] = {
     "HAYSTACK_OUTPUT_FORMAT": "output.format",
     "HAYSTACK_LOG_LEVEL": "output.log_level",
     "HAYSTACK_STORE_BACKEND": "document_store.backend",
@@ -24,7 +24,6 @@ ENV_VAR_MAP: dict[str, str] = {
     "HAYSTACK_STORE_INDEX": "document_store.index",
     "HAYSTACK_LLM_PROVIDER": "llm.provider",
     "HAYSTACK_LLM_MODEL": "llm.model",
-    "HAYSTACK_PIPELINE_FILE": "pipeline.default_file",
     "HAYSTACK_TEMPLATES_DIR": "pipeline.templates_dir",
 }
 
@@ -57,7 +56,7 @@ def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any
 def _apply_env_overrides(data: dict[str, Any]) -> dict[str, Any]:
     import os
 
-    for env_key, dotted_key in ENV_VAR_MAP.items():
+    for env_key, dotted_key in HAYSTACK_ENV_VAR_MAP.items():
         value = os.environ.get(env_key)
         if value is None:
             continue
@@ -117,7 +116,7 @@ def load_with_sources() -> dict[str, tuple[Any, str]]:
                 resolved[f"{section}.{field}"] = (value, ConfigSource.PROJECT)
 
     # env var overrides
-    for env_key, dotted_key in ENV_VAR_MAP.items():
+    for env_key, dotted_key in HAYSTACK_ENV_VAR_MAP.items():
         value = os.environ.get(env_key)
         if value is not None:
             resolved[dotted_key] = (value, f"${env_key}")

@@ -37,7 +37,6 @@ class LLMConfig:
 
 @dataclass
 class PipelineConfig:
-    default_file: str | None = None
     templates_dir: str = "pipelines/"
 
 
@@ -59,6 +58,5 @@ FIELD_CHOICES: dict[str, list[str] | None] = {
     "document_store.index": None,
     "llm.provider": list(LLMProvider.__args__),  # type: ignore[attr-defined]
     "llm.model": None,
-    "pipeline.default_file": None,
     "pipeline.templates_dir": None,
 }
