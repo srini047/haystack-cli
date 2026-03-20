@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 from typing import Annotated, Optional
@@ -19,9 +20,16 @@ app = typer.Typer(help="Manage Haystack CLI configuration.")
 
 
 @app.command()
-def show() -> None:
+def show(
+        as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
+    ) -> None:
     """Print all resolved config values, annotated with their source."""
     rows = load_with_sources()
+    
+    if as_json:
+        typer.echo(json.dumps({k: {"value": v, "source": s} for k, (v, s) in rows.items()}, indent=2))
+        return
+
     print_config_table(rows)
 
 

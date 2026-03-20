@@ -1,8 +1,7 @@
-import importlib.metadata
-
 import typer
 
 from haystack_cli import __version__
+from haystack_cli.adapters.sdk import get_haystack_version, HaystackNotFoundError
 from haystack_cli.commands import config as config_cmd
 from haystack_cli.commands import init as init_cmd
 
@@ -17,11 +16,12 @@ app.add_typer(init_cmd.app, name="init")
 
 
 def _get_haystack_version() -> str:
-    """Get the installed haystack-ai version."""
     try:
-        return importlib.metadata.version("haystack-ai")
-    except importlib.metadata.PackageNotFoundError:
-        return "Currently not installed"
+        return get_haystack_version()
+    except HaystackNotFoundError:
+        return """`haystack-ai` not installed. Please install using 
+                  `pip install haystack-ai` to access all features
+               """
 
 def _get_haystack_cli_version() -> str:
     """Get the current haystack-cli version."""
@@ -36,6 +36,5 @@ def root(
     if version:
         typer.echo(f"haystack-cli - {_get_haystack_cli_version()}")
         typer.echo(f"haystack-ai  - {_get_haystack_version()}")
-        typer.echo("")
 
         raise typer.Exit()
