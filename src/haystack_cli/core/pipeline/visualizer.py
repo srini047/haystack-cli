@@ -4,10 +4,9 @@ from rich.text import Text
 
 from haystack_cli.adapters.pipeline import (
     load,
-    load_as_dict,
     save_image,
     PipelineLoadError,
-    PipelineSaveError,
+    to_mermaid,
 )
 from haystack_cli.core.pipeline.inspector import PipelineInspector
 
@@ -19,13 +18,12 @@ class PipelineVisualizer:
 
     def mermaid(self, path: Path) -> str:
         """
-        Return Mermaid diagram text.
+        Return Mermaid diagram text
+
         Uses Haystack's native _to_mermaid_text if pipeline can be instantiated,
         falls back to a simple text representation from dict if not.
         """
         try:
-            from haystack_cli.adapters.pipeline import to_mermaid
-
             pipeline = load(path)
             return to_mermaid(pipeline)
         except PipelineLoadError:

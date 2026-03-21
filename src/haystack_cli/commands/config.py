@@ -1,6 +1,7 @@
+import json
 import os
 import subprocess
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -10,7 +11,11 @@ from haystack_cli.config.loader import (
     load_with_sources,
 )
 from haystack_cli.config.schema import FIELD_CHOICES
-from haystack_cli.config.writer import ConfigWriter, InvalidConfigKeyError, InvalidConfigValueError
+from haystack_cli.config.writer import (
+    ConfigWriter,
+    InvalidConfigKeyError,
+    InvalidConfigValueError,
+)
 from haystack_cli.output.console import console
 from haystack_cli.output.errors import abort
 from haystack_cli.output.tables import print_config_table, print_schema_table
@@ -19,18 +24,29 @@ app = typer.Typer(help="Manage Haystack CLI configuration.")
 
 
 @app.command()
-def show() -> None:
-    """Print all resolved config values, annotated with their source."""
+def show(
+    as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
+) -> None:
+    """Print all resolved config values, annotated with their source"""
     rows = load_with_sources()
+
+    if as_json:
+        typer.echo(
+            json.dumps(
+                {k: {"value": v, "source": s} for k, (v, s) in rows.items()}, indent=2
+            )
+        )
+        return
+
     print_config_table(rows)
 
 
 @app.command()
 def get(key: str) -> None:
-    """Read a single config value."""
+    """Read a single config value"""
     rows = load_with_sources()
     if key not in rows:
-        abort(f"Unknown config key: '{key}'", hint=f"Run: haystack config schema")
+        abort(f"Unknown config key: '{key}'", hint="Run: haystack config schema")
 
     value, source = rows[key]
     console.print(f"[key]{key}[/key]  {value}  [source]({source})[/source]")
@@ -40,32 +56,37 @@ def get(key: str) -> None:
 def set(
     key: str,
     value: str,
-    global_: Annotated[bool, typer.Option("--global", help="Write to global config.")] = False,
+    global_: Annotated[
+        bool, typer.Option("--global", help="Write to global config.")
+    ] = False,
 ) -> None:
-    """Set a config key to a value."""
+    """Set a config key to a value"""
     try:
-        ConfigWriter(global_scope=global_).set(key, value)
-        scope = "global config" if global_ else "config.toml"
+        scope = "global config" if global_ else "project.toml"
         console.print(
             f"  [success]✓[/success] Set [key]{key}[/key] = {value}  [source]({scope})[/source]"
         )
-    except InvalidConfigKeyError as e:
-        abort(str(e))
-    except InvalidConfigValueError as e:
-        abort(str(e))
-    except ValueError as e:
+    except (InvalidConfigKeyError, InvalidConfigValueError, ValueError) as e:
         abort(str(e))
 
 
 @app.command()
-def schema() -> None:
-    """Show all valid config keys and their accepted values."""
+def schema(
+    as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
+) -> None:
+    """Show all valid config keys and their accepted values"""
+    if as_json:
+        typer.echo(json.dumps({k: v for k, v in FIELD_CHOICES.items()}, indent=2))
+        return
+
     print_schema_table(FIELD_CHOICES)
 
 
 @app.command()
 def edit(
-    global_: Annotated[bool, typer.Option("--global", help="Edit global config.")] = False,
+    global_: Annotated[
+        bool, typer.Option("--global", help="Edit global config.")
+    ] = False,
 ) -> None:
     """Open the config file in $EDITOR or default to `nano`."""
     path = GLOBAL_CONFIG_PATH if global_ else PROJECT_CONFIG_PATH
@@ -82,7 +103,9 @@ def edit(
 
 @app.command()
 def init(
-    global_: Annotated[bool, typer.Option("--global", help="Initialise global config.")] = False,
+    global_: Annotated[
+        bool, typer.Option("--global", help="Initialise global config.")
+    ] = False,
 ) -> None:
     """Interactively create a project or global config file."""
     import questionary

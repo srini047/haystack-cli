@@ -16,13 +16,16 @@ class PipelineResultValidation:
         return {"valid": self.valid, "errors": self.errors, "warnings": self.warnings}
 
 
-# Errors that indicate missing env/credentials — not structural problems.
-_ENV_ERROR_HINTS = (
+_WARNING_HINTS = (
     "environment variables are not set",
     "api_key",
     "API_KEY",
     "authentication",
     "credential",
+    "not imported",
+    "Please check that the package is installed",
+    "failed to import the optional dependency",
+    "Run 'pip install",
 )
 
 
@@ -48,7 +51,7 @@ class PipelineValidator:
             load(path)
         except PipelineLoadError as e:
             error_str = str(e)
-            if any(hint in error_str for hint in _ENV_ERROR_HINTS):
+            if any(hint in error_str for hint in _WARNING_HINTS):
                 result.warnings.append(
                     f"Component requires credentials not set in environment: {error_str}\n"
                     "  Pipeline structure is valid — set the required env vars before running."

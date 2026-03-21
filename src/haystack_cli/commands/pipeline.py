@@ -6,7 +6,6 @@ import typer
 import questionary
 
 from haystack_cli.adapters.pipeline import PipelineLoadError, load
-from haystack_cli.commands.init import _PIPELINE_TEMPLATES
 from haystack_cli.config.schema import FIELD_CHOICES
 from haystack_cli.core.pipeline.diff import PipelineDiff
 from haystack_cli.core.pipeline.inspector import PipelineInspector
@@ -55,20 +54,36 @@ def template_use(
         Optional[Path], typer.Option("--output", "-o", help="Output directory.")
     ] = None,
 ) -> None:
-    """Copy a pipeline template into the project."""
+    """Copy a pipeline template into the project (default: pipelines/), with substitutions applied."""
     scaffold = PipelineScaffold()
+
+    try:
+        scaffold.read_template(name)  # validate name exists before prompting
+    except TemplateNotFoundError as e:
+        abort(str(e), hint="Run: haystack pipeline template list")
+
+    document_store = questionary.select(
+        "Document store:",
+        choices=FIELD_CHOICES["document_store.backend"] or [],
+    ).ask()
+
+    llm_provider = questionary.select(
+        "LLM provider:",
+        choices=FIELD_CHOICES["llm.provider"] or [],
+    ).ask()
+
+    context = scaffold.build_context(
+        document_store=document_store, llm_provider=llm_provider
+    )
+    content = scaffold._interpolate(scaffold.read_template(name), context)
+
     out_dir = output or _DEFAULT_PIPELINES_DIR
     out_dir.mkdir(parents=True, exist_ok=True)
     dest = out_dir / f"{name}.yaml"
 
-    try:
-        content = scaffold.read_template(name)
-    except TemplateNotFoundError as e:
-        abort(str(e), hint=f"Run: haystack pipeline template list")
-
-    # If file exists — ask to overwrite
     if dest.exists():
-        if not questionary.confirm(f"Overwrite {dest}?", default=False).ask():
+        console.print(f"\n  [warning]⚠[/warning]  {dest} already exists.\n")
+        if not questionary.confirm("Overwrite?", default=False).ask():
             raise typer.Exit()
 
     dest.write_text(content, encoding="utf-8")
@@ -188,7 +203,7 @@ def show(
 def save(
     file: Annotated[Path, typer.Argument(help="Path to pipeline YAML.")],
 ) -> None:
-    """Save a PNG diagram of the pipeline to assets/pipelines/<n>.png."""
+    """Save a PNG diagram of the pipeline to assets/pipelines/<name>.png"""
     try:
         load(file)
     except PipelineLoadError as e:
@@ -241,7 +256,22 @@ def run(
 ) -> None:
     """Execute a pipeline. Pass inputs via --input JSON or --input-file"""
 
-    # Resolve inputs
+    if dry_run:
+        result = PipelineValidator().validate(file)
+        msg = {"dry_run": True, "valid": result.valid, "errors": result.errors}
+        if as_json:
+            typer.echo(json.dumps(msg, indent=2))
+        else:
+            if result.valid:
+                console.print(
+                    "  [success]✓[/success] Dry run complete — pipeline loaded successfully."
+                )
+            else:
+                console.print("  [error]✗[/error] Dry run failed.")
+                for e in result.errors:
+                    console.print(f"  [error]  • {e}[/error]")
+        return
+
     inputs: dict = {}
     if input_file:
         try:
@@ -254,23 +284,7 @@ def run(
         except json.JSONDecodeError as e:
             abort(f"Invalid JSON in --input: {e}")
     else:
-        # Fall back to project config default_file inputs prompt or empty
         inputs = _prompt_for_inputs(file)
-
-    if dry_run:
-        result = PipelineValidator().validate(file)
-        msg = {"dry_run": True, "valid": result.valid, "errors": result.errors}
-        if as_json:
-            typer.echo(json.dumps(msg, indent=2))
-        else:
-            console.print(
-                f"  [success]✓[/success] Dry run complete — pipeline loaded successfully."
-                if result.valid
-                else f"  [error]✗[/error] Dry run failed."
-            )
-            for e in result.errors:
-                console.print(f"  [error]  • {e}[/error]")
-        return
 
     try:
         result_data = PipelineRunner().run(file, inputs)
@@ -288,22 +302,23 @@ def _prompt_for_inputs(file: Path) -> dict:
     """Interactively prompt for mandatory pipeline inputs"""
 
     data = PipelineInspector().inspect(file)
-    inputs: dict = {}
+    inputs_map = data.get("inputs", {})
 
-    mandatory = [
-        (component, socket)
-        for component, sockets in data["inputs"].items()
-        for socket, meta in sockets.items()
-        if meta["is_mandatory"]
-    ]
-
-    if not mandatory:
-        return inputs
+    if not inputs_map:
+        return {}
 
     console.print("\n  [info]Pipeline inputs required:[/info]\n")
-    for component, socket in mandatory:
-        value = questionary.text(f"  {component}.{socket}:").ask()
-        if value:
-            inputs.setdefault(component, {})[socket] = value
+    inputs: dict = {}
+
+    for input_name, targets in inputs_map.items():
+        value = questionary.text(f"  {input_name}:").ask()
+        if not value:
+            continue
+
+        target_list = targets if isinstance(targets, list) else [targets]
+        for target in target_list:
+            if "." in str(target):
+                component, socket = str(target).split(".", 1)
+                inputs.setdefault(component, {})[socket] = value
 
     return inputs

@@ -1,4 +1,5 @@
 import typer
+
 from haystack_cli.output.console import err_console
 
 
