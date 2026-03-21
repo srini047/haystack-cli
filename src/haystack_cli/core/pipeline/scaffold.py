@@ -99,9 +99,7 @@ class PipelineScaffold:
     def list_templates(self) -> list[str]:
         pkg = resources.files(self._TEMPLATES_PACKAGE)
         return sorted(
-            item.name.removesuffix(".yaml")
-            for item in pkg.iterdir()
-            if item.name.endswith(".yaml")
+            item.name.removesuffix(".yaml") for item in pkg.iterdir() if item.name.endswith(".yaml")
         )
 
     def read_template(self, name: str) -> str:
@@ -128,18 +126,14 @@ class PipelineScaffold:
             raise ProjectExistsError(f"Directory already exists: {project_dir}")
 
         files: dict[Path, str] = {
-            project_dir
-            / "retrieval.yaml": self._interpolate(
+            project_dir / "retrieval.yaml": self._interpolate(
                 self.read_template("retrieval"), context
             ),
-            project_dir
-            / "indexing.yaml": self._interpolate(
+            project_dir / "indexing.yaml": self._interpolate(
                 self.read_template("indexing"), context
             ),
             project_dir / ".env.example": self._build_env_example(context),
-            project_dir
-            / ".haystack"
-            / "config.toml": self._build_project_toml(context),
+            project_dir / ".haystack" / "config.toml": self._build_project_toml(context),
             project_dir / "README.md": self._build_readme(project_dir.name, context),
         }
 
@@ -164,9 +158,7 @@ class PipelineScaffold:
         lines.append(_ENV_VAR_MAP.get(provider, ""))
         if store != "inmemory":
             lines.append(f"\n# Document store ({store})")
-            lines.append(
-                f"# See: https://haystack.deepset.ai/integrations/{store}-document-store"
-            )
+            lines.append(f"# See: https://haystack.deepset.ai/integrations/{store}-document-store")
         return "\n".join(lines) + "\n"
 
     def _build_project_toml(self, context: dict[str, str]) -> str:

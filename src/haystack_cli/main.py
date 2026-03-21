@@ -43,6 +43,7 @@ def _get_haystack_version() -> str:
                   `pip install haystack-ai` to access all features
                """
 
+
 def _get_haystack_cli_version() -> str:
     return __version__
 

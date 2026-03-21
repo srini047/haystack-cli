@@ -2,7 +2,6 @@ from haystack_cli.adapters.document_store import get_document_store
 
 
 class DocumentSearcher:
-
     def search(self, query: str, top_k: int = 5) -> dict:
         store = get_document_store()
 

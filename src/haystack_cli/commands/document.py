@@ -17,9 +17,7 @@ app = typer.Typer(help="Inspect documents in the configured document store.")
 
 @app.command("list")
 def list_documents(
-    limit: Annotated[
-        int, typer.Option("--limit", "-n", help="Max documents to show.")
-    ] = 20,
+    limit: Annotated[int, typer.Option("--limit", "-n", help="Max documents to show.")] = 20,
     filter_field: Annotated[
         Optional[str], typer.Option("--filter-field", help="Meta field to filter on.")
     ] = None,

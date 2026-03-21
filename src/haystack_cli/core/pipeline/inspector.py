@@ -4,7 +4,6 @@ from haystack_cli.adapters.pipeline import load_as_dict
 
 
 class PipelineInspector:
-
     def inspect(self, path: Path) -> dict:
         """
         Return a structured summary of a pipeline's components,

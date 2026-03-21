@@ -16,9 +16,7 @@ def print_config_table(rows: dict[str, tuple[Any, str]]) -> None:
 
     for key, (value, source) in rows.items():
         display = (
-            "****"
-            if "api_key" in key
-            else str(value) if value is not None else "[muted]—[/muted]"
+            "****" if "api_key" in key else str(value) if value is not None else "[muted]—[/muted]"
         )
         table.add_row(key, display, source)
 
@@ -61,9 +59,7 @@ def print_inspect_result(data: dict) -> None:
 
     # Connections
     if data["connections"]:
-        conn_table = Table(
-            box=box.SIMPLE, header_style="bold white", title="Connections"
-        )
+        conn_table = Table(box=box.SIMPLE, header_style="bold white", title="Connections")
         conn_table.add_column("From", style="key")
         conn_table.add_column("To", style="key")
         for c in data["connections"]:
@@ -73,24 +69,18 @@ def print_inspect_result(data: dict) -> None:
     # Inputs — YAML format: {socket_name: [component.socket, ...]} or {component: {socket: meta}}
     inputs = data.get("inputs", {})
     if inputs:
-        inp_table = Table(
-            box=box.SIMPLE, header_style="bold white", title="Pipeline Inputs"
-        )
+        inp_table = Table(box=box.SIMPLE, header_style="bold white", title="Pipeline Inputs")
         inp_table.add_column("Input", style="key")
         inp_table.add_column("Receives")
         for name, targets in inputs.items():
-            targets_str = (
-                ", ".join(targets) if isinstance(targets, list) else str(targets)
-            )
+            targets_str = ", ".join(targets) if isinstance(targets, list) else str(targets)
             inp_table.add_row(name, targets_str)
         console.print(inp_table)
 
     # Outputs — YAML format: {output_name: component.socket}
     outputs = data.get("outputs", {})
     if outputs:
-        out_table = Table(
-            box=box.SIMPLE, header_style="bold white", title="Pipeline Outputs"
-        )
+        out_table = Table(box=box.SIMPLE, header_style="bold white", title="Pipeline Outputs")
         out_table.add_column("Output", style="key")
         out_table.add_column("From")
         for name, source in outputs.items():
@@ -146,9 +136,7 @@ def print_component_info(data: dict) -> None:
     console.print(f"  [muted]{data['doc']}[/muted]\n")
 
     if data["params"]:
-        p_table = Table(
-            box=box.SIMPLE, header_style="bold white", title="Init Parameters"
-        )
+        p_table = Table(box=box.SIMPLE, header_style="bold white", title="Init Parameters")
         p_table.add_column("Name", style="key")
         p_table.add_column("Type", style="muted")
         p_table.add_column("Required")
@@ -159,9 +147,7 @@ def print_component_info(data: dict) -> None:
         console.print(p_table)
 
     if data["inputs"]:
-        i_table = Table(
-            box=box.SIMPLE, header_style="bold white", title="Input Sockets"
-        )
+        i_table = Table(box=box.SIMPLE, header_style="bold white", title="Input Sockets")
         i_table.add_column("Name", style="key")
         i_table.add_column("Type", style="muted")
         for name, type_str in data["inputs"].items():
@@ -169,9 +155,7 @@ def print_component_info(data: dict) -> None:
         console.print(i_table)
 
     if data["outputs"]:
-        o_table = Table(
-            box=box.SIMPLE, header_style="bold white", title="Output Sockets"
-        )
+        o_table = Table(box=box.SIMPLE, header_style="bold white", title="Output Sockets")
         o_table.add_column("Name", style="key")
         o_table.add_column("Type", style="muted")
         for name, type_str in data["outputs"].items():

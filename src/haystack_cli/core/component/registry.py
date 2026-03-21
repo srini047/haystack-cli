@@ -4,7 +4,6 @@ from haystack_cli.adapters.component import get_registry, _category
 
 
 class ComponentRegistry:
-
     def list_all(self) -> dict[str, list[dict]]:
         """Return all components grouped by category."""
         registry = get_registry()
@@ -15,10 +14,12 @@ class ComponentRegistry:
             if cls.__name__ in seen_names:
                 continue
             seen_names.add(cls.__name__)
-            grouped[_category(cls)].append({
-                "name": cls.__name__,
-                "full_type": fqn,
-            })
+            grouped[_category(cls)].append(
+                {
+                    "name": cls.__name__,
+                    "full_type": fqn,
+                }
+            )
 
         return dict(sorted(grouped.items()))
 

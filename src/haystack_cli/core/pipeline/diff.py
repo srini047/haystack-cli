@@ -6,7 +6,6 @@ from haystack_cli.adapters.pipeline import load_as_dict
 
 
 class PipelineDiff:
-
     def diff(self, path_a: Path, path_b: Path) -> dict:
         """Return a structured semantic diff between two pipeline YAML files."""
         dict_a = load_as_dict(path_a)

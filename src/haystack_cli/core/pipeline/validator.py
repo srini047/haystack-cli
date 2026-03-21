@@ -84,6 +84,4 @@ class PipelineValidator:
                 result.errors.append(f"Component '{name}' must be a mapping.")
                 continue
             if "type" not in definition:
-                result.errors.append(
-                    f"Component '{name}' is missing required key: 'type'"
-                )
+                result.errors.append(f"Component '{name}' is missing required key: 'type'")

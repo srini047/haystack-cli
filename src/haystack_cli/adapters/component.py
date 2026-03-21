@@ -50,7 +50,9 @@ def get_component_info(cls: type) -> dict[str, Any]:
         type_str = (
             annotation.__name__
             if hasattr(annotation, "__name__")
-            else str(annotation) if annotation != inspect.Parameter.empty else "Any"
+            else str(annotation)
+            if annotation != inspect.Parameter.empty
+            else "Any"
         )
         params.append(
             {
@@ -58,9 +60,7 @@ def get_component_info(cls: type) -> dict[str, Any]:
                 "type": type_str,
                 "required": param.default is inspect.Parameter.empty,
                 "default": (
-                    None
-                    if param.default is inspect.Parameter.empty
-                    else repr(param.default)
+                    None if param.default is inspect.Parameter.empty else repr(param.default)
                 ),
             }
         )
@@ -73,13 +73,11 @@ def get_component_info(cls: type) -> dict[str, Any]:
             instance = cls()
             if hasattr(instance, "__haystack_input__"):
                 inputs = {
-                    k: str(v.type)
-                    for k, v in instance.__haystack_input__._sockets_dict.items()
+                    k: str(v.type) for k, v in instance.__haystack_input__._sockets_dict.items()
                 }
             if hasattr(instance, "__haystack_output__"):
                 outputs = {
-                    k: str(v.type)
-                    for k, v in instance.__haystack_output__._sockets_dict.items()
+                    k: str(v.type) for k, v in instance.__haystack_output__._sockets_dict.items()
                 }
         except Exception:
             pass

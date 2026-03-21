@@ -6,7 +6,6 @@ class ComponentNotFoundError(ValueError):
 
 
 class ComponentInspector:
-
     def info(self, name: str) -> dict:
         cls = get_component_class(name)
         if cls is None:

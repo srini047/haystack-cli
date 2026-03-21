@@ -26,16 +26,14 @@ app = typer.Typer(help="Manage Haystack CLI configuration.")
 
 @app.command()
 def show(
-        as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
-    ) -> None:
+    as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
+) -> None:
     """Print all resolved config values, annotated with their source."""
     rows = load_with_sources()
 
     if as_json:
         typer.echo(
-            json.dumps(
-                {k: {"value": v, "source": s} for k, (v, s) in rows.items()}, indent=2
-            )
+            json.dumps({k: {"value": v, "source": s} for k, (v, s) in rows.items()}, indent=2)
         )
         return
 
@@ -57,9 +55,7 @@ def get(key: str) -> None:
 def set(
     key: str,
     value: str,
-    global_: Annotated[
-        bool, typer.Option("--global", help="Write to global config.")
-    ] = False,
+    global_: Annotated[bool, typer.Option("--global", help="Write to global config.")] = False,
 ) -> None:
     """Set a config key to a value"""
     try:
@@ -85,9 +81,7 @@ def schema(
 
 @app.command()
 def edit(
-    global_: Annotated[
-        bool, typer.Option("--global", help="Edit global config.")
-    ] = False,
+    global_: Annotated[bool, typer.Option("--global", help="Edit global config.")] = False,
 ) -> None:
     """Open the config file in $EDITOR or default to `nano`."""
     path = GLOBAL_CONFIG_PATH if global_ else PROJECT_CONFIG_PATH
@@ -104,9 +98,7 @@ def edit(
 
 @app.command()
 def init(
-    global_: Annotated[
-        bool, typer.Option("--global", help="Initialise global config.")
-    ] = False,
+    global_: Annotated[bool, typer.Option("--global", help="Initialise global config.")] = False,
 ) -> None:
     """Interactively create a project or global config file."""
     import questionary

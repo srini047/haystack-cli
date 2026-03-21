@@ -2,8 +2,12 @@ from haystack_cli.adapters.document_store import get_document_store
 
 
 class DocumentLister:
-
-    def list(self, limit: int = 20, filter_field: str | None = None, filter_value: str | None = None) -> dict:
+    def list(
+        self,
+        limit: int = 5,
+        filter_field: str | None = None,
+        filter_value: str | None = None,
+    ) -> dict:
         store = get_document_store()
         total = store.count_documents()
 

@@ -72,9 +72,7 @@ def template_use(
         choices=FIELD_CHOICES["llm.provider"] or [],
     ).ask()
 
-    context = scaffold.build_context(
-        document_store=document_store, llm_provider=llm_provider
-    )
+    context = scaffold.build_context(document_store=document_store, llm_provider=llm_provider)
     content = scaffold._interpolate(scaffold.read_template(name), context)
 
     out_dir = output or _DEFAULT_PIPELINES_DIR
@@ -116,9 +114,7 @@ def create() -> None:
         choices=FIELD_CHOICES["llm.provider"] or [],
     ).ask()
 
-    default_dest = str(
-        _DEFAULT_PIPELINES_DIR / f"{name.strip().replace(' ', '-')}.yaml"
-    )
+    default_dest = str(_DEFAULT_PIPELINES_DIR / f"{name.strip().replace(' ', '-')}.yaml")
     dest_str = questionary.text("Save to:", default=default_dest).ask()
     if not dest_str:
         raise typer.Exit()

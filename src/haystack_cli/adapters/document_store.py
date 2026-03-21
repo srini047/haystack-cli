@@ -34,8 +34,7 @@ def _build_store(backend: str, host: str, port: int, index: str | None) -> Any:
             )
         except ImportError:
             raise UnsupportedBackendError(
-                "Elasticsearch integration not installed.\n\n"
-                "  pip install elasticsearch-haystack"
+                "Elasticsearch integration not installed.\n\n  pip install elasticsearch-haystack"
             )
 
     if backend == "opensearch":
@@ -44,13 +43,10 @@ def _build_store(backend: str, host: str, port: int, index: str | None) -> Any:
                 OpenSearchDocumentStore,
             )
 
-            return OpenSearchDocumentStore(
-                hosts=f"http://{host}:{port}", index=index or "default"
-            )
+            return OpenSearchDocumentStore(hosts=f"http://{host}:{port}", index=index or "default")
         except ImportError:
             raise UnsupportedBackendError(
-                "OpenSearch integration not installed.\n\n"
-                "  pip install opensearch-haystack"
+                "OpenSearch integration not installed.\n\n  pip install opensearch-haystack"
             )
 
     if backend == "weaviate":
@@ -59,13 +55,10 @@ def _build_store(backend: str, host: str, port: int, index: str | None) -> Any:
                 WeaviateDocumentStore,
             )
 
-            return WeaviateDocumentStore(
-                url=f"http://{host}:{port}", index=index or "default"
-            )
+            return WeaviateDocumentStore(url=f"http://{host}:{port}", index=index or "default")
         except ImportError:
             raise UnsupportedBackendError(
-                "Weaviate integration not installed.\n\n"
-                "  pip install weaviate-haystack"
+                "Weaviate integration not installed.\n\n  pip install weaviate-haystack"
             )
 
     if backend == "qdrant":
@@ -75,7 +68,7 @@ def _build_store(backend: str, host: str, port: int, index: str | None) -> Any:
             return QdrantDocumentStore(host=host, port=port, index=index or "default")
         except ImportError:
             raise UnsupportedBackendError(
-                "Qdrant integration not installed.\n\n" "  pip install qdrant-haystack"
+                "Qdrant integration not installed.\n\n  pip install qdrant-haystack"
             )
 
     if backend == "pgvector":
@@ -89,8 +82,7 @@ def _build_store(backend: str, host: str, port: int, index: str | None) -> Any:
             )
         except ImportError:
             raise UnsupportedBackendError(
-                "PgVector integration not installed.\n\n"
-                "  pip install pgvector-haystack"
+                "PgVector integration not installed.\n\n  pip install pgvector-haystack"
             )
 
     raise UnsupportedBackendError(f"Unknown backend: '{backend}'")
