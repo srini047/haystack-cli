@@ -1,0 +1,36 @@
+# Retrieval Pipeline — Retriever + PromptBuilder + Generator
+# Store: {{ document_store }} | Provider: {{ llm_provider }}
+
+components:
+  retriever:
+    type: {{ retriever_type }}
+    init_parameters:
+      document_store:
+        type: {{ document_store_type }}
+        init_parameters: {}
+
+  prompt_builder:
+    type: haystack.components.builders.prompt_builder.PromptBuilder
+    init_parameters:
+      template: |
+        Given the following context, answer the question.
+        Context: {% for doc in documents %}{{ doc.content }}{% endfor %}
+        Question: {{ query }}
+
+  generator:
+    type: {{ generator_type }}
+    init_parameters: {}
+
+connections:
+  - sender: retriever.documents
+    receiver: prompt_builder.documents
+  - sender: prompt_builder.prompt
+    receiver: generator.prompt
+
+inputs:
+  query:
+    - retriever.query
+    - prompt_builder.query
+
+outputs:
+  replies: generator.replies

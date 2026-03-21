@@ -18,7 +18,7 @@ LogLevel = Literal["debug", "info", "warning", "error"]
 @dataclass
 class OutputConfig:
     format: OutputFormat = "rich"
-    log_level: LogLevel = "warning"
+    log_level: LogLevel = "error"
 
 
 @dataclass

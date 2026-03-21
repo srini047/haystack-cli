@@ -1,28 +1,27 @@
-# Indexing Basic — FileConverter + Splitter + Embedder + Writer
-# Store: {{ document_store }}
+# Indexing Pipeline — Converter + Splitter + Embedder + Writer
+# Store: {{ document_store }} | Provider: {{ llm_provider }}
 
 components:
   converter:
-    type: haystack.components.converters.TextFileToDocument
+    type: haystack.components.converters.txt.TextFileToDocument
     init_parameters: {}
 
   splitter:
-    type: haystack.components.preprocessors.DocumentSplitter
+    type: haystack.components.preprocessors.document_splitter.DocumentSplitter
     init_parameters:
       split_by: word
       split_length: 200
       split_overlap: 20
 
   embedder:
-    type: haystack.components.embedders.OpenAIDocumentEmbedder
-    init_parameters:
-      model: text-embedding-3-small
+    type: {{ embedder_type }}
+    init_parameters: {}
 
   writer:
-    type: haystack.components.writers.DocumentWriter
+    type: haystack.components.writers.document_writer.DocumentWriter
     init_parameters:
       document_store:
-        type: haystack.document_stores.in_memory.InMemoryDocumentStore
+        type: {{ document_store_type }}
         init_parameters: {}
 
 connections:
