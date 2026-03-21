@@ -177,3 +177,47 @@ def print_component_info(data: dict) -> None:
         for name, type_str in data["outputs"].items():
             o_table.add_row(name, type_str)
         console.print(o_table)
+
+
+def print_document_list(data: dict) -> None:
+    console.print(
+        f"\n  [muted]Total documents: [key]{data['total']}[/key]  showing: {data['showing']}[/muted]\n"
+    )
+
+    if not data["documents"]:
+        console.print("  [muted]No documents found.[/muted]")
+        return
+
+    table = Table(box=box.SIMPLE, header_style="bold white")
+    table.add_column("ID", style="muted", max_width=12)
+    table.add_column("Preview", min_width=40)
+    table.add_column("Meta", style="muted")
+
+    for doc in data["documents"]:
+        meta_str = ", ".join(f"{k}={v}" for k, v in (doc.get("meta") or {}).items())
+        table.add_row(doc["id"][:10] + "…", doc["content_preview"], meta_str)
+
+    console.print(table)
+
+
+def print_document_search(data: dict) -> None:
+    console.print(
+        f"\n  [muted]Query:[/muted] [key]{data['query']}[/key]  "
+        f"[muted]results: {len(data['results'])}[/muted]\n"
+    )
+
+    if not data["results"]:
+        console.print("  [muted]No results found.[/muted]")
+        return
+
+    table = Table(box=box.SIMPLE, header_style="bold white")
+    table.add_column("Score", style="muted", max_width=8)
+    table.add_column("Content", min_width=50)
+    table.add_column("Meta", style="muted")
+
+    for doc in data["results"]:
+        score = f"{doc['score']:.3f}" if doc.get("score") else "—"
+        meta_str = ", ".join(f"{k}={v}" for k, v in (doc.get("meta") or {}).items())
+        table.add_row(score, doc["content_preview"], meta_str)
+
+    console.print(table)
