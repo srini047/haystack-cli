@@ -7,6 +7,7 @@ from haystack_cli.adapters.sdk import get_haystack_version, HaystackNotFoundErro
 from haystack_cli.commands import config as config_cmd
 from haystack_cli.commands import init as init_cmd
 from haystack_cli.commands import pipeline as pipeline_cmd
+from haystack_cli.commands import component as component_cmd
 
 # Typer app instances for commands and subcommands
 app = typer.Typer(
@@ -18,6 +19,7 @@ app = typer.Typer(
 app.add_typer(config_cmd.app, name="config")
 app.add_typer(init_cmd.app, name="init")
 app.add_typer(pipeline_cmd.app, name="pipeline")
+app.add_typer(component_cmd.app, name="component")
 
 
 def _configure_log_level() -> None:
