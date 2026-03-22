@@ -50,9 +50,7 @@ def _get_haystack_cli_version() -> str:
 
 @app.callback(invoke_without_command=True)
 def root(
-    version: bool = typer.Option(
-        False, "--version", "-v", help="Show version and exit.", is_eager=True
-    ),
+    version: bool = typer.Option(False, "--version", "-v", help="Show version and exit.", is_eager=True),
 ) -> None:
     _configure_log_level()
 

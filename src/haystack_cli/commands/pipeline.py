@@ -169,12 +169,8 @@ def inspect(
 @app.command()
 def show(
     file: Annotated[Path, typer.Argument(help="Path to pipeline YAML.")],
-    format: Annotated[
-        str, typer.Option("--format", "-f", help="Output format: ascii | mermaid.")
-    ] = "ascii",
-    as_json: Annotated[
-        bool, typer.Option("--json", help="Output graph as JSON adjacency list.")
-    ] = False,
+    format: Annotated[str, typer.Option("--format", "-f", help="Output format: ascii | mermaid.")] = "ascii",
+    as_json: Annotated[bool, typer.Option("--json", help="Output graph as JSON adjacency list.")] = False,
 ) -> None:
     """Visualize a pipeline as ASCII (default), Mermaid text, or JSON adjacency"""
 
@@ -215,8 +211,7 @@ def save(
         abort(
             str(e),
             hint=(
-                "mermaid.ink requires an internet connection. "
-                "For offline use: haystack pipeline show --format mermaid"
+                "mermaid.ink requires an internet connection. For offline use: haystack pipeline show --format mermaid"
             ),
         )
     except Exception as e:
@@ -306,9 +301,7 @@ def run(
         Path | None,
         typer.Option("--input-file", help="Path to JSON file with inputs."),
     ] = None,
-    dry_run: Annotated[
-        bool, typer.Option("--dry-run", help="Validate and load only — do not execute.")
-    ] = False,
+    dry_run: Annotated[bool, typer.Option("--dry-run", help="Validate and load only — do not execute.")] = False,
     as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
 ) -> None:
     """Execute a pipeline. Pass inputs via --input JSON or --input-file"""
@@ -320,9 +313,7 @@ def run(
             typer.echo(json.dumps(msg, indent=2))
         else:
             if result.valid:
-                console.print(
-                    "  [success]✓[/success] Dry run complete — pipeline loaded successfully."
-                )
+                console.print("  [success]✓[/success] Dry run complete — pipeline loaded successfully.")
             else:
                 console.print("  [error]✗[/error] Dry run failed.")
                 for e in result.errors:

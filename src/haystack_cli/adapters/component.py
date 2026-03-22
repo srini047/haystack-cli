@@ -59,9 +59,7 @@ def get_component_info(cls: type) -> dict[str, Any]:
                 "name": param_name,
                 "type": type_str,
                 "required": param.default is inspect.Parameter.empty,
-                "default": (
-                    None if param.default is inspect.Parameter.empty else repr(param.default)
-                ),
+                "default": (None if param.default is inspect.Parameter.empty else repr(param.default)),
             }
         )
 
@@ -72,13 +70,9 @@ def get_component_info(cls: type) -> dict[str, Any]:
         try:
             instance = cls()
             if hasattr(instance, "__haystack_input__"):
-                inputs = {
-                    k: str(v.type) for k, v in instance.__haystack_input__._sockets_dict.items()
-                }
+                inputs = {k: str(v.type) for k, v in instance.__haystack_input__._sockets_dict.items()}
             if hasattr(instance, "__haystack_output__"):
-                outputs = {
-                    k: str(v.type) for k, v in instance.__haystack_output__._sockets_dict.items()
-                }
+                outputs = {k: str(v.type) for k, v in instance.__haystack_output__._sockets_dict.items()}
         except Exception:
             pass
     else:
@@ -86,11 +80,7 @@ def get_component_info(cls: type) -> dict[str, Any]:
         if hasattr(cls, "run"):
             run_sig = inspect.signature(cls.run)  # ty:ignore[invalid-argument-type]
             inputs = {
-                n: (
-                    p.annotation.__name__
-                    if hasattr(p.annotation, "__name__")
-                    else str(p.annotation)
-                )
+                n: (p.annotation.__name__ if hasattr(p.annotation, "__name__") else str(p.annotation))
                 for n, p in run_sig.parameters.items()
                 if n != "self" and p.annotation != inspect.Parameter.empty
             }

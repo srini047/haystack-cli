@@ -70,9 +70,7 @@ class PipelineValidator:
             result.errors.append("Missing required key: 'components'")
 
         if "connections" not in data:
-            result.warnings.append(
-                "No 'connections' defined — pipeline has a single component or is incomplete."
-            )
+            result.warnings.append("No 'connections' defined — pipeline has a single component or is incomplete.")
 
         components = data.get("components", {})
         if not isinstance(components, dict):

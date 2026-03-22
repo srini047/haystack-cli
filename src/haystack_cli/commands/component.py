@@ -16,9 +16,7 @@ app = typer.Typer(help="Browse and inspect Haystack components.")
 
 @app.command("list")
 def list_components(
-    type_filter: Annotated[
-        str | None, typer.Option("--type", "-t", help="Filter by category.")
-    ] = None,
+    type_filter: Annotated[str | None, typer.Option("--type", "-t", help="Filter by category.")] = None,
     search: Annotated[str | None, typer.Option("--search", "-s", help="Search by keyword.")] = None,
     as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
 ) -> None:

@@ -36,15 +36,15 @@ dev = [
 [tool.ruff]
 src = ["src"]
 target-version = "py310"
-line-length = 100
+line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
 
-[tool.mypy]
-python_version = "3.10"
-strict = true
-mypy_path = "src"
+[tool.codespell]
+ignore-words-list = "ans,astroid,nd,ned,nin,ue,rouge,ist,Claus,SME"
+quiet-level = 3
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+

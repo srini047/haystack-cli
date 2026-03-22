@@ -31,9 +31,7 @@ def show(
     rows = load_with_sources()
 
     if as_json:
-        typer.echo(
-            json.dumps({k: {"value": v, "source": s} for k, (v, s) in rows.items()}, indent=2)
-        )
+        typer.echo(json.dumps({k: {"value": v, "source": s} for k, (v, s) in rows.items()}, indent=2))
         return
 
     print_config_table(rows)
@@ -59,9 +57,7 @@ def set(
     """Set a config key to a value"""
     try:
         scope = "global config" if global_ else "project.toml"
-        console.print(
-            f"  [success]✓[/success] Set [key]{key}[/key] = {value}  [source]({scope})[/source]"
-        )
+        console.print(f"  [success]✓[/success] Set [key]{key}[/key] = {value}  [source]({scope})[/source]")
     except (InvalidConfigKeyError, InvalidConfigValueError, ValueError) as e:
         abort(str(e))
 

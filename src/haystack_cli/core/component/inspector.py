@@ -10,7 +10,6 @@ class ComponentInspector:
         cls = get_component_class(name)
         if cls is None:
             raise ComponentNotFoundError(
-                f"Component '{name}' not found.\n\n"
-                "  Run: haystack component list  to browse available components."
+                f"Component '{name}' not found.\n\n  Run: haystack component list  to browse available components."
             )
         return get_component_info(cls)
