@@ -7,8 +7,14 @@ A community maintained CLI for the Haystack Agentic AI Framework.
 
 ## Installation
 
+### Install `uv`
+Unix: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+Windows: `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
+
 ### From PyPI:
-TBD
+```
+uv add haystack-cli
+```
 
 ### From source:
 ```bash
