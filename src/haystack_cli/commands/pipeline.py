@@ -5,6 +5,7 @@ from typing import Annotated, Optional
 import typer
 import questionary
 
+from haystack_cli.core.pipeline.benchmark import PipelineBenchmark
 from haystack_cli.adapters.pipeline import PipelineLoadError, load
 from haystack_cli.config.schema import FIELD_CHOICES
 from haystack_cli.core.pipeline.diff import PipelineDiff
@@ -20,6 +21,7 @@ from haystack_cli.output.tables import (
     print_inspect_result,
     print_run_result,
     print_validation_result,
+    print_benchmark_result,
 )
 
 app = typer.Typer(help="Manage and run Haystack pipelines.")
@@ -34,7 +36,8 @@ _PIPELINES_ASSESTS_DIR = Path("assets") / "pipelines"
 def template_list(
     as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
 ) -> None:
-    """List all available built-in pipeline templates."""
+    """List all available built-in pipeline templates"""
+
     templates = PipelineScaffold().list_templates()
 
     if as_json:
@@ -54,7 +57,8 @@ def template_use(
         Optional[Path], typer.Option("--output", "-o", help="Output directory.")
     ] = None,
 ) -> None:
-    """Copy a pipeline template into the project (default: pipelines/), with substitutions applied."""
+    """Copy a pipeline template into the project (default: pipelines/)"""
+
     scaffold = PipelineScaffold()
 
     try:
@@ -72,7 +76,9 @@ def template_use(
         choices=FIELD_CHOICES["llm.provider"] or [],
     ).ask()
 
-    context = scaffold.build_context(document_store=document_store, llm_provider=llm_provider)
+    context = scaffold.build_context(
+        document_store=document_store, llm_provider=llm_provider
+    )
     content = scaffold._interpolate(scaffold.read_template(name), context)
 
     out_dir = output or _DEFAULT_PIPELINES_DIR
@@ -114,7 +120,9 @@ def create() -> None:
         choices=FIELD_CHOICES["llm.provider"] or [],
     ).ask()
 
-    default_dest = str(_DEFAULT_PIPELINES_DIR / f"{name.strip().replace(' ', '-')}.yaml")
+    default_dest = str(
+        _DEFAULT_PIPELINES_DIR / f"{name.strip().replace(' ', '-')}.yaml"
+    )
     dest_str = questionary.text("Save to:", default=default_dest).ask()
     if not dest_str:
         raise typer.Exit()
@@ -219,12 +227,72 @@ def save(
 
 
 @app.command()
+def benchmark(
+    file: Annotated[Path, typer.Argument(help="Path to pipeline YAML.")],
+    input: Annotated[
+        Optional[str],
+        typer.Option("--input", "-i", help="Pipeline inputs as JSON string."),
+    ] = None,
+    input_file: Annotated[
+        Optional[Path],
+        typer.Option("--input-file", help="Path to JSON file with inputs."),
+    ] = None,
+    runs: Annotated[
+        int, typer.Option("--runs", "-n", help="Number of benchmark runs.")
+    ] = 10,
+    warmup: Annotated[
+        int, typer.Option("--warmup", help="Warmup runs excluded from stats.")
+    ] = 1,
+    as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
+) -> None:
+    """Run a benchmark on the pipeline and print results"""
+
+    try:
+        pipeline = load(file)
+    except PipelineLoadError as e:
+        abort(str(e))
+
+    inputs: dict = {}
+    if input_file:
+        try:
+            inputs = json.loads(input_file.read_text(encoding="utf-8"))
+        except Exception as e:
+            abort(f"Failed to read input file: {e}")
+    elif input:
+        try:
+            inputs = json.loads(input)
+        except json.JSONDecodeError as e:
+            abort(f"Invalid JSON in --input: {e}")
+    else:
+        inputs = _prompt_for_inputs(file)
+
+    if runs < 1:
+        abort("--runs must be at least 1.")
+
+    result = PipelineBenchmark().run(
+        pipeline=pipeline,
+        inputs=inputs,
+        pipeline_file=str(file),
+        runs=runs,
+        warmup=warmup,
+    )
+    results = result.to_dict()
+
+    if as_json:
+        typer.echo(json.dumps(results, indent=2))
+        return
+
+    print_benchmark_result(results)
+
+
+@app.command()
 def diff(
     file_a: Annotated[Path, typer.Argument(help="First pipeline YAML.")],
     file_b: Annotated[Path, typer.Argument(help="Second pipeline YAML.")],
     as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
 ) -> None:
     """Semantically diff two pipeline YAML files"""
+
     data = PipelineDiff().diff(file_a, file_b)
 
     if as_json:
