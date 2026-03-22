@@ -1,13 +1,13 @@
 import json
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
-import typer
 import questionary
+import typer
 
-from haystack_cli.core.pipeline.benchmark import PipelineBenchmark
 from haystack_cli.adapters.pipeline import PipelineLoadError, load
 from haystack_cli.config.schema import FIELD_CHOICES
+from haystack_cli.core.pipeline.benchmark import PipelineBenchmark
 from haystack_cli.core.pipeline.diff import PipelineDiff
 from haystack_cli.core.pipeline.inspector import PipelineInspector
 from haystack_cli.core.pipeline.runner import PipelineRunner
@@ -17,11 +17,11 @@ from haystack_cli.core.pipeline.visualizer import PipelineVisualizer
 from haystack_cli.output.console import console
 from haystack_cli.output.errors import abort
 from haystack_cli.output.tables import (
+    print_benchmark_result,
     print_diff_result,
     print_inspect_result,
     print_run_result,
     print_validation_result,
-    print_benchmark_result,
 )
 
 app = typer.Typer(help="Manage and run Haystack pipelines.")
@@ -53,9 +53,7 @@ def template_list(
 @template_app.command("use")
 def template_use(
     name: str,
-    output: Annotated[
-        Optional[Path], typer.Option("--output", "-o", help="Output directory.")
-    ] = None,
+    output: Annotated[Path | None, typer.Option("--output", "-o", help="Output directory.")] = None,
 ) -> None:
     """Copy a pipeline template into the project (default: pipelines/)"""
 
@@ -76,9 +74,7 @@ def template_use(
         choices=FIELD_CHOICES["llm.provider"] or [],
     ).ask()
 
-    context = scaffold.build_context(
-        document_store=document_store, llm_provider=llm_provider
-    )
+    context = scaffold.build_context(document_store=document_store, llm_provider=llm_provider)
     content = scaffold._interpolate(scaffold.read_template(name), context)
 
     out_dir = output or _DEFAULT_PIPELINES_DIR
@@ -120,9 +116,7 @@ def create() -> None:
         choices=FIELD_CHOICES["llm.provider"] or [],
     ).ask()
 
-    default_dest = str(
-        _DEFAULT_PIPELINES_DIR / f"{name.strip().replace(' ', '-')}.yaml"
-    )
+    default_dest = str(_DEFAULT_PIPELINES_DIR / f"{name.strip().replace(' ', '-')}.yaml")
     dest_str = questionary.text("Save to:", default=default_dest).ask()
     if not dest_str:
         raise typer.Exit()
@@ -213,14 +207,17 @@ def save(
     except PipelineLoadError as e:
         abort(str(e), hint="Fix the pipeline YAML before saving a diagram.")
 
-    console.print(f"  [muted]Rendering pipeline diagram via mermaid.ink...[/muted]")
+    console.print("  [muted]Rendering pipeline diagram via mermaid.ink...[/muted]")
     try:
         output_path = PipelineVisualizer().save(file, _PIPELINES_ASSESTS_DIR)
         console.print(f"  [success]\u2713[/success] Saved to [key]{output_path}[/key]")
     except Exception as e:
         abort(
             str(e),
-            hint="mermaid.ink requires an internet connection. For offline use: haystack pipeline show --format mermaid",
+            hint=(
+                "mermaid.ink requires an internet connection. "
+                "For offline use: haystack pipeline show --format mermaid"
+            ),
         )
     except Exception as e:
         abort(str(e))
@@ -230,19 +227,15 @@ def save(
 def benchmark(
     file: Annotated[Path, typer.Argument(help="Path to pipeline YAML.")],
     input: Annotated[
-        Optional[str],
+        str | None,
         typer.Option("--input", "-i", help="Pipeline inputs as JSON string."),
     ] = None,
     input_file: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Option("--input-file", help="Path to JSON file with inputs."),
     ] = None,
-    runs: Annotated[
-        int, typer.Option("--runs", "-n", help="Number of benchmark runs.")
-    ] = 10,
-    warmup: Annotated[
-        int, typer.Option("--warmup", help="Warmup runs excluded from stats.")
-    ] = 1,
+    runs: Annotated[int, typer.Option("--runs", "-n", help="Number of benchmark runs.")] = 10,
+    warmup: Annotated[int, typer.Option("--warmup", help="Warmup runs excluded from stats.")] = 1,
     as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
 ) -> None:
     """Run a benchmark on the pipeline and print results"""
@@ -306,11 +299,11 @@ def diff(
 def run(
     file: Annotated[Path, typer.Argument(help="Path to pipeline YAML.")],
     input: Annotated[
-        Optional[str],
+        str | None,
         typer.Option("--input", "-i", help="Pipeline inputs as JSON string."),
     ] = None,
     input_file: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Option("--input-file", help="Path to JSON file with inputs."),
     ] = None,
     dry_run: Annotated[

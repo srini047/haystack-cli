@@ -3,9 +3,9 @@ from pathlib import Path
 from rich.text import Text
 
 from haystack_cli.adapters.pipeline import (
+    PipelineLoadError,
     load,
     save_image,
-    PipelineLoadError,
     to_mermaid,
 )
 from haystack_cli.core.pipeline.inspector import PipelineInspector

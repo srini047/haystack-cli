@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Any
 
 from haystack_cli.config.loader import load as load_config
-from haystack_cli.config.schema import DocumentStoreBackend
 
 
 class DocumentStoreConnectionError(RuntimeError):
@@ -43,7 +42,9 @@ def _build_store(backend: str, host: str, port: int, index: str | None) -> Any:
                 OpenSearchDocumentStore,
             )
 
-            return OpenSearchDocumentStore(hosts=f"http://{host}:{port}", index=index or "default")
+            return OpenSearchDocumentStore(
+                hosts=f"http://{host}:{port}", index=index or "default"
+            )
         except ImportError:
             raise UnsupportedBackendError(
                 "OpenSearch integration not installed.\n\n  pip install opensearch-haystack"
@@ -55,7 +56,9 @@ def _build_store(backend: str, host: str, port: int, index: str | None) -> Any:
                 WeaviateDocumentStore,
             )
 
-            return WeaviateDocumentStore(url=f"http://{host}:{port}", index=index or "default")
+            return WeaviateDocumentStore(
+                url=f"http://{host}:{port}", index=index or "default"
+            )
         except ImportError:
             raise UnsupportedBackendError(
                 "Weaviate integration not installed.\n\n  pip install weaviate-haystack"
@@ -113,7 +116,7 @@ def get_document_store() -> Any:
         raise
     except Exception as e:
         raise DocumentStoreConnectionError(
-            f"Failed to connect to {backend} at {cfg.document_store.host}:{cfg.document_store.port}\n\n"
-            f"  {e}\n\n"
+            f"Failed to connect to {backend} at {cfg.document_store.host}:{cfg.document_store.port}"
+            f"\n\n  {e}\n\n"
             "  Run: haystack connect  to diagnose connection issues."
         )

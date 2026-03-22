@@ -1,9 +1,7 @@
-import json
 from typing import Any
 
 from rich import box
 from rich.table import Table
-from rich.text import Text
 
 from haystack_cli.output.console import console
 
@@ -181,7 +179,8 @@ def print_component_info(data: dict) -> None:
 
 def print_document_list(data: dict) -> None:
     console.print(
-        f"\n  [muted]Total documents: [key]{data['total']}[/key]  showing: {data['showing']}[/muted]\n"
+        f"\n  [muted]Total documents: [key]{data['total']}[/key]"
+        f"  showing: {data['showing']}[/muted]\n"
     )
 
     if not data["documents"]:
@@ -265,7 +264,8 @@ def print_benchmark_result(data: dict) -> None:
     if data["components"]:
         slowest = max(data["components"], key=lambda c: c["avg_ms"])
         console.print(
-            f"  [muted]Slowest: [key]{slowest['name']}[/key] ({slowest['pct_of_total']}% of total)[/muted]"
+            f"  [muted]Slowest: [key]{slowest['name']}[/key]"
+            f" ({slowest['pct_of_total']}% of total)[/muted]"
         )
         console.print(
             f"  [muted]Fastest run: {t['min_ms']}ms  |  Slowest run: {t['max_ms']}ms[/muted]\n"

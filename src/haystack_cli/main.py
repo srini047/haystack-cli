@@ -3,12 +3,12 @@ import logging
 import typer
 
 from haystack_cli import __version__
-from haystack_cli.adapters.sdk import get_haystack_version, HaystackNotFoundError
+from haystack_cli.adapters.sdk import HaystackNotFoundError, get_haystack_version
+from haystack_cli.commands import component as component_cmd
 from haystack_cli.commands import config as config_cmd
+from haystack_cli.commands import document as document_cmd
 from haystack_cli.commands import init as init_cmd
 from haystack_cli.commands import pipeline as pipeline_cmd
-from haystack_cli.commands import component as component_cmd
-from haystack_cli.commands import document as document_cmd
 
 # Typer app instances for commands and subcommands
 app = typer.Typer(

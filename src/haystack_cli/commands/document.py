@@ -1,5 +1,5 @@
 import json
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -19,10 +19,10 @@ app = typer.Typer(help="Inspect documents in the configured document store.")
 def list_documents(
     limit: Annotated[int, typer.Option("--limit", "-n", help="Max documents to show.")] = 20,
     filter_field: Annotated[
-        Optional[str], typer.Option("--filter-field", help="Meta field to filter on.")
+        str | None, typer.Option("--filter-field", help="Meta field to filter on.")
     ] = None,
     filter_value: Annotated[
-        Optional[str], typer.Option("--filter-value", help="Value to match.")
+        str | None, typer.Option("--filter-value", help="Value to match.")
     ] = None,
     as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
 ) -> None:

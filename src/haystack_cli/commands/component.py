@@ -1,5 +1,5 @@
 import json
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -17,11 +17,9 @@ app = typer.Typer(help="Browse and inspect Haystack components.")
 @app.command("list")
 def list_components(
     type_filter: Annotated[
-        Optional[str], typer.Option("--type", "-t", help="Filter by category.")
+        str | None, typer.Option("--type", "-t", help="Filter by category.")
     ] = None,
-    search: Annotated[
-        Optional[str], typer.Option("--search", "-s", help="Search by keyword.")
-    ] = None,
+    search: Annotated[str | None, typer.Option("--search", "-s", help="Search by keyword.")] = None,
     as_json: Annotated[bool, typer.Option("--json", help="Output as JSON.")] = False,
 ) -> None:
     """List all available Haystack components, grouped by type."""

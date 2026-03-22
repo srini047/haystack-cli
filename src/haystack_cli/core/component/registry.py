@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from haystack_cli.adapters.component import get_registry, _category
+from haystack_cli.adapters.component import _category, get_registry
 
 
 class ComponentRegistry:

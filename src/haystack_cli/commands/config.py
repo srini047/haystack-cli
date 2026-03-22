@@ -1,5 +1,4 @@
 import json
-import json
 import os
 import subprocess
 from typing import Annotated
@@ -7,8 +6,8 @@ from typing import Annotated
 import typer
 
 from haystack_cli.config.loader import (
-    PROJECT_CONFIG_PATH,
     GLOBAL_CONFIG_PATH,
+    PROJECT_CONFIG_PATH,
     load_with_sources,
 )
 from haystack_cli.config.schema import FIELD_CHOICES
@@ -130,4 +129,4 @@ def init(
     writer.set("llm.provider", provider)
 
     console.print(f"\n  [success]✓[/success] Config written to {path}")
-    console.print(f"  [muted]Run [key]haystack config show[/key] to verify.[/muted]")
+    console.print("  [muted]Run [key]haystack config show[/key] to verify.[/muted]")

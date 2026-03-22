@@ -1,4 +1,5 @@
 from rich.console import Console
+
 from haystack_cli.output.themes import HAYSTACK_THEME
 
 console = Console(theme=HAYSTACK_THEME)

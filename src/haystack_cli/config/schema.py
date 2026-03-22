@@ -1,8 +1,7 @@
 from typing import Literal
 
-from pydantic.dataclasses import dataclass
 from pydantic import Field
-
+from pydantic.dataclasses import dataclass
 
 DocumentStoreBackend = Literal[
     "inmemory", "elasticsearch", "opensearch", "weaviate", "qdrant", "pgvector"

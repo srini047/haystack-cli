@@ -51,8 +51,8 @@ def init(project_name: str = typer.Argument(default="")) -> None:
     for path in created:
         console.print(f"    [muted]{path.relative_to(Path.cwd())}[/muted]")
 
-    console.print(f"\n  [info]Next steps:[/info]")
+    console.print("\n  [info]Next steps:[/info]")
     console.print(f"    cd {project_name}")
-    console.print(f"    cp .env.example .env")
-    console.print(f"    haystack pipeline validate retrieval.yaml")
-    console.print(f"    haystack pipeline run retrieval.yaml\n")
+    console.print("    cp .env.example .env")
+    console.print("    haystack pipeline validate retrieval.yaml")
+    console.print("    haystack pipeline run retrieval.yaml\n")

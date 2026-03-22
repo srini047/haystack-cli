@@ -2,9 +2,9 @@ import dataclasses
 import statistics
 import time
 from collections import defaultdict
+from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import Any
-from collections.abc import Iterator
 
 from haystack.tracing import disable_tracing, enable_tracing
 from haystack.tracing.tracer import Span, Tracer
@@ -33,7 +33,6 @@ class TimingSpan(Span):
 
 
 class TimingTracer(Tracer):
-
     def __init__(self) -> None:
         self.spans: list[TimingSpan] = []
 
@@ -62,9 +61,7 @@ class TimingTracer(Tracer):
         return [s for s in self.spans if s.operation_name == "haystack.component.run"]
 
     def pipeline_span(self) -> TimingSpan | None:
-        return next(
-            (s for s in self.spans if s.operation_name == "haystack.pipeline.run"), None
-        )
+        return next((s for s in self.spans if s.operation_name == "haystack.pipeline.run"), None)
 
 
 @dataclasses.dataclass
@@ -164,11 +161,7 @@ class PipelineBenchmark:
                 name=name,
                 type=component_types[name],
                 pct_of_total=round((statistics.mean(durations) / total_avg) * 100, 1),
-                **{
-                    f"{k}_ms": v
-                    for k, v in _stats(durations).items()
-                    if k not in ("min", "max")
-                },
+                **{f"{k}_ms": v for k, v in _stats(durations).items() if k not in ("min", "max")},
             )
             for name, durations in component_durations.items()
         ]

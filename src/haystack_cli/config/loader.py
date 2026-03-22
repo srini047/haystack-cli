@@ -4,8 +4,8 @@ from typing import Any
 import tomlkit
 
 from haystack_cli.config.schema import (
-    HaystackConfig,
     DocumentStoreConfig,
+    HaystackConfig,
     LLMConfig,
     OutputConfig,
     PipelineConfig,

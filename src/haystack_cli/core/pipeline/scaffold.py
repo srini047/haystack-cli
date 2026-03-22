@@ -12,25 +12,50 @@ class ProjectExistsError(FileExistsError):
 
 _STORE_TYPE_MAP: dict[str, str] = {
     "inmemory": "haystack.document_stores.in_memory.document_store.InMemoryDocumentStore",
-    "elasticsearch": "haystack_integrations.document_stores.elasticsearch.document_store.ElasticsearchDocumentStore",
-    "opensearch": "haystack_integrations.document_stores.opensearch.document_store.OpenSearchDocumentStore",
-    "weaviate": "haystack_integrations.document_stores.weaviate.document_store.WeaviateDocumentStore",
+    "elasticsearch": (
+        "haystack_integrations.document_stores.elasticsearch.document_store"
+        ".ElasticsearchDocumentStore"
+    ),
+    "opensearch": (
+        "haystack_integrations.document_stores.opensearch.document_store.OpenSearchDocumentStore"
+    ),
+    "weaviate": (
+        "haystack_integrations.document_stores.weaviate.document_store.WeaviateDocumentStore"
+    ),
     "qdrant": "haystack_integrations.document_stores.qdrant.document_store.QdrantDocumentStore",
-    "pgvector": "haystack_integrations.document_stores.pgvector.document_store.PgvectorDocumentStore",
+    "pgvector": (
+        "haystack_integrations.document_stores.pgvector.document_store.PgvectorDocumentStore"
+    ),
 }
 
 _RETRIEVER_TYPE_MAP: dict[str, str] = {
     "inmemory": "haystack.components.retrievers.in_memory.bm25_retriever.InMemoryBM25Retriever",
-    "elasticsearch": "haystack_integrations.components.retrievers.elasticsearch.bm25_retriever.ElasticsearchBM25Retriever",
-    "opensearch": "haystack_integrations.components.retrievers.opensearch.bm25_retriever.OpenSearchBM25Retriever",
-    "weaviate": "haystack_integrations.components.retrievers.weaviate.embedding_retriever.WeaviateEmbeddingRetriever",
-    "qdrant": "haystack_integrations.components.retrievers.qdrant.retriever.QdrantEmbeddingRetriever",
-    "pgvector": "haystack_integrations.components.retrievers.pgvector.pgvector_embedding_retriever.PgvectorEmbeddingRetriever",
+    "elasticsearch": (
+        "haystack_integrations.components.retrievers.elasticsearch.bm25_retriever"
+        ".ElasticsearchBM25Retriever"
+    ),
+    "opensearch": (
+        "haystack_integrations.components.retrievers.opensearch.bm25_retriever"
+        ".OpenSearchBM25Retriever"
+    ),
+    "weaviate": (
+        "haystack_integrations.components.retrievers.weaviate.embedding_retriever"
+        ".WeaviateEmbeddingRetriever"
+    ),
+    "qdrant": (
+        "haystack_integrations.components.retrievers.qdrant.retriever.QdrantEmbeddingRetriever"
+    ),
+    "pgvector": (
+        "haystack_integrations.components.retrievers.pgvector.pgvector_embedding_retriever"
+        ".PgvectorEmbeddingRetriever"
+    ),
 }
 
 _GENERATOR_TYPE_MAP: dict[str, str] = {
     "openai": "haystack.components.generators.openai.OpenAIGenerator",
-    "anthropic": "haystack_integrations.components.generators.anthropic.generator.AnthropicGenerator",
+    "anthropic": (
+        "haystack_integrations.components.generators.anthropic.generator.AnthropicGenerator"
+    ),
     "cohere": "haystack_integrations.components.generators.cohere.generator.CohereGenerator",
     "ollama": "haystack_integrations.components.generators.ollama.generator.OllamaGenerator",
     "huggingface": "haystack.components.generators.hugging_face_api.HuggingFaceAPIGenerator",
@@ -51,9 +76,16 @@ _GENERATOR_INIT_MAP: dict[str, str] = {
 _EMBEDDER_TYPE_MAP: dict[str, str] = {
     "openai": "haystack.components.embedders.openai_document_embedder.OpenAIDocumentEmbedder",
     "anthropic": "haystack.components.embedders.openai_document_embedder.OpenAIDocumentEmbedder",
-    "cohere": "haystack_integrations.components.embedders.cohere.document_embedder.CohereDocumentEmbedder",
-    "ollama": "haystack_integrations.components.embedders.ollama.document_embedder.OllamaDocumentEmbedder",
-    "huggingface": "haystack.components.embedders.hugging_face_api_document_embedder.HuggingFaceAPIDocumentEmbedder",
+    "cohere": (
+        "haystack_integrations.components.embedders.cohere.document_embedder.CohereDocumentEmbedder"
+    ),
+    "ollama": (
+        "haystack_integrations.components.embedders.ollama.document_embedder.OllamaDocumentEmbedder"
+    ),
+    "huggingface": (
+        "haystack.components.embedders.hugging_face_api_document_embedder"
+        ".HuggingFaceAPIDocumentEmbedder"
+    ),
 }
 
 _EMBEDDER_INIT_MAP: dict[str, str] = {
