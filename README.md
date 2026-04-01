@@ -5,6 +5,9 @@ A community maintained CLI for the Haystack Agentic AI Framework.
 > [!NOTE]
 > This is work in progress and can expect few bugs and unexpected behaviour. Feel free to raise issue with repro steps to understand and solve the problem.
 
+## Demo Video
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-jLEQSeVL7o?si=eU3t7u1PDtDhghmx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Installation
 
 ### Install `uv`
